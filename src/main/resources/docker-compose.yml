@@ -1,0 +1,10 @@
+version: '3'
+services:
+  apothekedb:
+    container_name: 'apothekedb'
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=Pass.4150
+      - MYSQL_DATABASE=apodb
+    ports:
+      - "3306:3306"
