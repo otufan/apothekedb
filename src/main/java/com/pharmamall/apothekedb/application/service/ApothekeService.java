@@ -4,7 +4,9 @@ import com.pharmamall.apothekedb.annotations.ApplicationService;
 import com.pharmamall.apothekedb.application.dto.ApothekeDTO;
 import com.pharmamall.apothekedb.application.port.in.ApothekeUseCase;
 import com.pharmamall.apothekedb.application.port.out.ApothekePort;
+import com.pharmamall.apothekedb.application.port.out.InhaberPort;
 import com.pharmamall.apothekedb.domain.Apotheke;
+import com.pharmamall.apothekedb.domain.Inhaber;
 import com.pharmamall.apothekedb.exception.BadRequestException;
 import com.pharmamall.apothekedb.exception.ConflictException;
 import com.pharmamall.apothekedb.exception.ResourceNotFoundException;
@@ -12,7 +14,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
@@ -21,19 +25,22 @@ import java.util.List;
 public class ApothekeService implements ApothekeUseCase {
 
     private final ApothekePort apothekePort;
+    private final InhaberPort inhaberPort;
 
 
     @Override
-    public Apotheke createApotheke(Apotheke apotheke) throws BadRequestException {
+    public void createApotheke(Apotheke apotheke, Long inhaberId) throws BadRequestException {
+
+        Inhaber inhaber = inhaberPort.findById(inhaberId);
+        Set<Inhaber> inhabers = new HashSet<>();
+        inhabers.add(inhaber);
 
         if (apothekePort.existsByEmail(apotheke.getEmail())) {
             throw new ConflictException("Email is already in use!");
         }
-        //TODO
-        /*Set<ApothekeGruppe> gruppen = new HashSet<>();
-        ApothekeGruppe apothekeGruppe = apothekePort.findByGruppe(apotheke.get)*/
 
-        return apothekePort.write(apotheke);
+        apotheke.setInhabers(inhabers);
+        apothekePort.write(apotheke);
     }
 
     @Override
@@ -41,23 +48,21 @@ public class ApothekeService implements ApothekeUseCase {
 
         Apotheke apotheke = apothekePort.findById(id);
 
-        ApothekeDTO apothekeDTO = ApothekeDTO.builder().
+        return ApothekeDTO.builder().
                 name(apotheke.getName()).
                 strasse(apotheke.getStrasse()).
                 plz(apotheke.getPlz()).
                 ort(apotheke.getOrt()).
                 phoneNummer(apotheke.getPhoneNummer()).
-                email(apotheke.getEmail()).build();
-
-        apothekeDTO.setGruppe(apotheke.getApothekeGruppe());
-        apothekeDTO.setInhabers(apotheke.getInhabers());
-
-        return apothekeDTO;
+                email(apotheke.getEmail()).
+                apothekeGruppe(apotheke.getApothekeGruppe()).
+                inhabers(apotheke.getInhabers()).
+                build();
 
     }
 
     @Override
-    public Apotheke updateApotheke(Long id, ApothekeDTO apothekeDTO) throws BadRequestException {
+    public void updateApotheke(Long id, ApothekeDTO apothekeDTO) throws BadRequestException {
 
         boolean emailExists = apothekePort.existsByEmail(apothekeDTO.getEmail());
         Apotheke apothekeDetails = apothekePort.findById(id);
@@ -74,9 +79,11 @@ public class ApothekeService implements ApothekeUseCase {
                 ort(apothekeDTO.getOrt()).
                 phoneNummer(apothekeDTO.getPhoneNummer()).
                 email(apothekeDTO.getEmail()).
+                apothekeGruppe(apothekeDTO.getApothekeGruppe()).
+                inhabers(apothekeDTO.getInhabers()).
                 build();
 
-        return apothekePort.write(apotheke);
+        apothekePort.write(apotheke);
     }
 
     @Override
@@ -95,18 +102,19 @@ public class ApothekeService implements ApothekeUseCase {
         List<Apotheke> apothekeList = apothekePort.findAll();
         List<ApothekeDTO> apothekeDTOS = new ArrayList<>();
         ApothekeDTO apothekeDTO;
-        for (int i = 0; i < apothekeList.size(); i++) {
+        for (Apotheke apotheke : apothekeList) {
 
             apothekeDTO = ApothekeDTO.builder().
-                    name(apothekeList.get(i).getName()).
-                    strasse(apothekeList.get(i).getStrasse()).
-                    plz(apothekeList.get(i).getPlz()).
-                    ort(apothekeList.get(i).getOrt()).
-                    phoneNummer(apothekeList.get(i).getPhoneNummer()).
-                    email(apothekeList.get(i).getEmail()).build();
+                    name(apotheke.getName()).
+                    strasse(apotheke.getStrasse()).
+                    plz(apotheke.getPlz()).
+                    ort(apotheke.getOrt()).
+                    phoneNummer(apotheke.getPhoneNummer()).
+                    email(apotheke.getEmail()).
+                    apothekeGruppe(apotheke.getApothekeGruppe()).
+                    inhabers(apotheke.getInhabers()).
+                    build();
 
-            apothekeDTO.setGruppe(apothekeList.get(i).getApothekeGruppe());
-            apothekeDTO.setInhabers(apothekeList.get(i).getInhabers());
             apothekeDTOS.add(apothekeDTO);
         }
         return apothekeDTOS;

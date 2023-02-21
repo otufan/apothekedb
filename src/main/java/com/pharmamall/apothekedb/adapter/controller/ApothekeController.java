@@ -23,10 +23,10 @@ public class ApothekeController {
 
     private final ApothekeUseCase apothekeUseCase;
 
-    @PostMapping("/register")
-    public ResponseEntity<Map<String, Boolean>> registerApotheke(@Valid @RequestBody Apotheke apotheke) {
+    @PostMapping("/inhaber/{inhaberId}/register")
+    public ResponseEntity<Map<String, Boolean>> registerApotheke(@PathVariable Long inhaberId, @Valid @RequestBody Apotheke apotheke) {
 
-        apothekeUseCase.createApotheke(apotheke);
+        apothekeUseCase.createApotheke(apotheke, inhaberId);
         Map<String, Boolean> map = new HashMap<>();
         map.put("Apotheke ist erfolgreich erstellt!", true);
         return new ResponseEntity<>(map, HttpStatus.CREATED); //Response 201

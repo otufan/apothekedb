@@ -2,6 +2,7 @@ package com.pharmamall.apothekedb.domain;
 
 import com.pharmamall.apothekedb.annotations.DomainModel;
 
+import com.pharmamall.apothekedb.domain.enumeration.ApothekeGruppen;
 import lombok.*;
 
 import javax.persistence.*;
@@ -59,8 +60,9 @@ public class Apotheke {
             inverseJoinColumns = @JoinColumn(name = "inhaber_id"))
     private Set<Inhaber> inhabers;
 
-    @ManyToOne
-    @JoinColumn(name = "gruppe_id")
-    private ApothekeGruppe apothekeGruppe;
+    @NotNull(message = "Bitte die Apothekegruppe eingeben")
+    @Column(nullable = false, unique = true)
+    @Enumerated(EnumType.STRING)
+    private ApothekeGruppen apothekeGruppe;
 
 }

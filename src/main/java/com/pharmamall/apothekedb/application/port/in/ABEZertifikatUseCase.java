@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public interface ABEZertifikatUseCase {
 
     ABEZertifikat getZertifikatById(Long id);
-    ABEZertifikat store(MultipartFile zertifikat) throws IOException;
+    ABEZertifikat store(MultipartFile zertifikat, Long apothekeId) throws IOException;
 
     Stream<ABEZertifikat> getAllAbeZertifikate();
 }

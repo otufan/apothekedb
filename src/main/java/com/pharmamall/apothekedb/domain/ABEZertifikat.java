@@ -22,9 +22,10 @@ public class ABEZertifikat {
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "pharmacy_id", referencedColumnName = "id")
-    private Apotheke apothekeId;
+    private Apotheke apotheke;
 
     private String name;
+
     private String type;
 
     @JsonIgnore

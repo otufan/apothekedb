@@ -30,19 +30,17 @@ public class InhaberService implements InhaberUseCase {
 
         Inhaber inhaber = inhaberPort.findById(id);
 
-        InhaberDTO inhaberDTO = InhaberDTO.builder().
+        return InhaberDTO.builder().
                 vorname(inhaber.getVorname()).
                 nachname(inhaber.getNachname()).
                 geburtsdatum(inhaber.getGeburtsdatum()).
                 geburtsort(inhaber.getGeburtsort()).build();
-
-        return inhaberDTO;
     }
 
     @Override
     public Inhaber updateInhaber(Long id, InhaberDTO inhaberDTO) throws BadRequestException {
 
-        Inhaber inhaberDetails = inhaberPort.findById(id);
+        inhaberPort.findById(id);
 
         Inhaber inhaber = Inhaber.builder().
                 id(id).
@@ -57,7 +55,7 @@ public class InhaberService implements InhaberUseCase {
     @Override
     public void removeById(Long id) throws ResourceNotFoundException {
 
-        if(inhaberPort.findById(id) != null) {
+        if (inhaberPort.findById(id) != null) {
             inhaberPort.deleteById(id);
         }
 
