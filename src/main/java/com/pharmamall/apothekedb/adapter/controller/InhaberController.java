@@ -24,17 +24,17 @@ public class InhaberController {
 
     private final InhaberUseCase inhaberUseCase;
 
-    @PostMapping("/register")
-    public ResponseEntity<Map<String, Boolean>> registerInhaber(@Valid @RequestBody Inhaber inhaber) {
+    @PostMapping("/apotheke/{apothekeId}/register")
+    public ResponseEntity<Map<String, Boolean>> registerInhaber(@Valid @RequestBody Inhaber inhaber, @PathVariable Long apothekeId) {
 
-        inhaberUseCase.createInhaber(inhaber);
+        inhaberUseCase.createInhaber(inhaber, apothekeId);
         Map<String, Boolean> map = new HashMap<>();
         map.put("Inhaber ist erfolgreich erstellt!", true);
         return new ResponseEntity<>(map, HttpStatus.CREATED); //Response 201
     }
-
     @GetMapping("/{id}")
-    public ResponseEntity<InhaberDTO> getInhaberById(@PathVariable Long id) {
+
+    public ResponseEntity<InhaberDTO> getInhaber(@PathVariable Long id) {
         InhaberDTO inhaberDTO = inhaberUseCase.findById(id);
         return new ResponseEntity<>(inhaberDTO, HttpStatus.OK);
     }
@@ -54,14 +54,5 @@ public class InhaberController {
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}/delete")
-    public ResponseEntity<Map<String, Boolean>> deleteInhaber(@PathVariable Long id) {
-        inhaberUseCase.removeById(id);
-
-        Map<String, Boolean> map = new HashMap<>();
-        map.put("erfolgreich", true);
-        return new ResponseEntity<>(map, HttpStatus.OK);
-
-    }
 
 }

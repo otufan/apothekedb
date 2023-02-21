@@ -4,9 +4,7 @@ import com.pharmamall.apothekedb.annotations.ApplicationService;
 import com.pharmamall.apothekedb.application.dto.ApothekeDTO;
 import com.pharmamall.apothekedb.application.port.in.ApothekeUseCase;
 import com.pharmamall.apothekedb.application.port.out.ApothekePort;
-import com.pharmamall.apothekedb.application.port.out.InhaberPort;
 import com.pharmamall.apothekedb.domain.Apotheke;
-import com.pharmamall.apothekedb.domain.Inhaber;
 import com.pharmamall.apothekedb.exception.BadRequestException;
 import com.pharmamall.apothekedb.exception.ConflictException;
 import com.pharmamall.apothekedb.exception.ResourceNotFoundException;
@@ -14,10 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 
 @Service
 @ApplicationService
@@ -25,22 +20,13 @@ import java.util.Set;
 public class ApothekeService implements ApothekeUseCase {
 
     private final ApothekePort apothekePort;
-    private final InhaberPort inhaberPort;
-
-
     @Override
-    public void createApotheke(Apotheke apotheke, Long inhaberId) throws BadRequestException {
-
-        Inhaber inhaber = inhaberPort.findById(inhaberId);
-        Set<Inhaber> inhabers = new HashSet<>();
-        inhabers.add(inhaber);
+    public Apotheke createApotheke(Apotheke apotheke) throws BadRequestException {
 
         if (apothekePort.existsByEmail(apotheke.getEmail())) {
             throw new ConflictException("Email is already in use!");
         }
-
-        apotheke.setInhabers(inhabers);
-        apothekePort.write(apotheke);
+        return apothekePort.write(apotheke);
     }
 
     @Override
@@ -62,7 +48,7 @@ public class ApothekeService implements ApothekeUseCase {
     }
 
     @Override
-    public void updateApotheke(Long id, ApothekeDTO apothekeDTO) throws BadRequestException {
+    public Apotheke updateApotheke(Long id, ApothekeDTO apothekeDTO) throws BadRequestException {
 
         boolean emailExists = apothekePort.existsByEmail(apothekeDTO.getEmail());
         Apotheke apothekeDetails = apothekePort.findById(id);
@@ -83,7 +69,7 @@ public class ApothekeService implements ApothekeUseCase {
                 inhabers(apothekeDTO.getInhabers()).
                 build();
 
-        apothekePort.write(apotheke);
+        return apothekePort.write(apotheke);
     }
 
     @Override

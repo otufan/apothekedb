@@ -10,6 +10,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
@@ -20,7 +21,7 @@ import java.util.Set;
 @Setter
 @Builder
 @DomainModel
-public class Apotheke {
+public class Apotheke implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,15 +55,15 @@ public class Apotheke {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @NotNull(message = "Bitte die Apothekegruppe eingeben")
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ApothekeGruppen apothekeGruppe;
+
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(name = "apotheke_inhaber",
             joinColumns = @JoinColumn(name = "apotheke_id"),
             inverseJoinColumns = @JoinColumn(name = "inhaber_id"))
     private Set<Inhaber> inhabers;
-
-    @NotNull(message = "Bitte die Apothekegruppe eingeben")
-    @Column(nullable = false, unique = true)
-    @Enumerated(EnumType.STRING)
-    private ApothekeGruppen apothekeGruppe;
 
 }

@@ -9,15 +9,14 @@ import java.util.List;
 @Port
 public interface InhaberUseCase {
 
-    Inhaber createInhaber(Inhaber inhaber);
+    Inhaber createInhaber(Inhaber inhaber, Long apothekeId);
 
     InhaberDTO findById(Long id);
 
     Inhaber updateInhaber(Long id, InhaberDTO inhaberDTO);
 
-    void removeById(Long id);
+    void removeInhaberById(Long apothekeId, Long inhaberId);
 
     List<Inhaber> fetchAllInhabers();
-
 
 }

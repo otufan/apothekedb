@@ -27,7 +27,6 @@ public class InhaberAdapter implements InhaberPort {
         return inhaberRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Inhaber mit id %d ist nicht gefunden", id)));
     }
 
-
     @Override
     public void deleteById(Long id) {
         inhaberRepository.deleteById(id);

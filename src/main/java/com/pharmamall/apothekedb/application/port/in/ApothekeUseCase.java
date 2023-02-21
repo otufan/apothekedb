@@ -9,11 +9,11 @@ import java.util.List;
 @Port
 public interface ApothekeUseCase {
 
-    void createApotheke(Apotheke apotheke, Long inhaberId);
+    Apotheke createApotheke(Apotheke apotheke);
 
     ApothekeDTO findById(Long id);
 
-    void updateApotheke(Long id, ApothekeDTO apothekeDTO);
+    Apotheke updateApotheke(Long id, ApothekeDTO apothekeDTO);
 
     void removeById(Long id);
 

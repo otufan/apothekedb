@@ -2,6 +2,7 @@ package com.pharmamall.apothekedb.adapter.controller;
 
 import com.pharmamall.apothekedb.application.dto.ApothekeDTO;
 import com.pharmamall.apothekedb.application.port.in.ApothekeUseCase;
+import com.pharmamall.apothekedb.application.port.in.InhaberUseCase;
 import com.pharmamall.apothekedb.domain.Apotheke;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,18 +23,19 @@ import java.util.Map;
 public class ApothekeController {
 
     private final ApothekeUseCase apothekeUseCase;
+    private final InhaberUseCase inhaberUseCase;
 
-    @PostMapping("/inhaber/{inhaberId}/register")
-    public ResponseEntity<Map<String, Boolean>> registerApotheke(@PathVariable Long inhaberId, @Valid @RequestBody Apotheke apotheke) {
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, Boolean>> registerApotheke(@Valid @RequestBody Apotheke apotheke) {
 
-        apothekeUseCase.createApotheke(apotheke, inhaberId);
+        apothekeUseCase.createApotheke(apotheke);
         Map<String, Boolean> map = new HashMap<>();
         map.put("Apotheke ist erfolgreich erstellt!", true);
         return new ResponseEntity<>(map, HttpStatus.CREATED); //Response 201
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApothekeDTO> getApothekeById(@PathVariable Long id) {
+    public ResponseEntity<ApothekeDTO> getApotheke(@PathVariable Long id) {
 
         ApothekeDTO apothekeDTO = apothekeUseCase.findById(id);
         return new ResponseEntity<>(apothekeDTO, HttpStatus.OK);
@@ -64,7 +66,15 @@ public class ApothekeController {
         map.put("erfolgreich", true);
 
         return new ResponseEntity<>(map, HttpStatus.OK);
+    }
 
+    @DeleteMapping("/{apothekeId}/delete/{inhaberId}")
+    public ResponseEntity<Map<String, Boolean>> deleteInhaber(@PathVariable Long apothekeId, @PathVariable Long inhaberId) {
+
+        inhaberUseCase.removeInhaberById(apothekeId, inhaberId);
+        Map<String, Boolean> map = new HashMap<>();
+        map.put("erfolgreich", true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
 
     }
 
